@@ -38,14 +38,15 @@ pub struct Expr {
 
 impl Expr {
     pub fn new(expr: &str) -> Self {
-        let lhs = Number::new(expr);
-        let rhs = Number::new(expr);
-        let op = Op::new(expr);
+        let (oprhs, lhs) = utils::extract_digits(&expr);
+        let lhs = Number::new(lhs);
+        let (rhs, op) = utils::extract_ops(&oprhs);
+        let rhs = Number::new(rhs);
+        let op = Op::new(op);
 
         Expr { lhs, rhs, op }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -78,11 +79,13 @@ mod tests {
 
     #[test]
     fn parse_one_plus_two() {
-        assert_eq!(Expr::new("1+2"), 
-                   Expr{
-                       lhs: Number(1),
-                       rhs: Number(2),
-                       op: Op::Add,
-                   });
+        assert_eq!(
+            Expr::new("1+2"),
+            Expr {
+                lhs: Number(1),
+                rhs: Number(2),
+                op: Op::Add,
+            }
+        );
     }
 }
