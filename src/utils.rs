@@ -1,13 +1,21 @@
-pub(crate) fn extract_digits(s: &str) -> (&str, &str) {
-    let digits_end = s
+pub(crate) fn take_while(accept: impl Fn(char) -> bool, s: &str) -> (&str, &str) {
+    let char_end = s
         .char_indices()
-        .find_map(|(idx, c)| if c.is_ascii_digit() { None } else { Some(idx) })
+        .find_map(|(idx, c)| if accept(c) { None } else { Some(idx) })
         .unwrap_or_else(|| s.len());
 
-    let digits = &s[..digits_end];
-    let remainder = &s[digits_end..];
+    let chars = &s[..char_end];
+    let remainder = &s[char_end..];
 
-    (remainder, digits)
+    (remainder, chars)
+}
+
+pub(crate) fn extract_digits(s: &str) -> (&str, &str) {
+    take_while(|c| c.is_ascii_digit(), s)
+}
+
+pub(crate) fn extract_whitespaces(s: &str) -> (&str, &str) {
+    take_while(|c| c == ' ', s)
 }
 
 pub(crate) fn extract_ops(s: &str) -> (&str, &str) {
@@ -52,8 +60,14 @@ mod tests {
     fn extract_op_multiple_mul() {
         assert_eq!(extract_ops("*23"), ("23", "*"));
     }
+
     #[test]
     fn extract_op_multiple_div() {
         assert_eq!(extract_ops("/1320"), ("1320", "/"));
+    }
+
+    #[test]
+    fn extract_spaces() {
+        assert_eq!(extract_whitespaces(" 1"), ("1", " "));
     }
 }
