@@ -1,3 +1,5 @@
+mod utils;
+
 #[derive(Debug, PartialEq)]
 pub struct Number(pub i32);
 
@@ -27,7 +29,23 @@ impl Op {
     }
 }
 
-fn main() {}
+#[derive(Debug, PartialEq)]
+pub struct Expr {
+    lhs: Number,
+    rhs: Number,
+    op: Op,
+}
+
+impl Expr {
+    pub fn new(expr: &str) -> Self {
+        let lhs = Number::new(expr);
+        let rhs = Number::new(expr);
+        let op = Op::new(expr);
+
+        Expr { lhs, rhs, op }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -56,5 +74,15 @@ mod tests {
     #[test]
     fn parse_div_op() {
         assert_eq!(Op::new("/"), Op::Div);
+    }
+
+    #[test]
+    fn parse_one_plus_two() {
+        assert_eq!(Expr::new("1+2"), 
+                   Expr{
+                       lhs: Number(1),
+                       rhs: Number(2),
+                       op: Op::Add,
+                   });
     }
 }
