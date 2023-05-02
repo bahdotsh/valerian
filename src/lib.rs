@@ -44,7 +44,11 @@ pub struct Expr {
 impl Expr {
     pub fn new(s: &str) -> Self {
         let (s, lhs) = Number::new(s);
+        let (s, _) = utils::extract_whitespaces(s);
+
         let (s, op) = Op::new(s);
+        let (s, _) = utils::extract_whitespaces(s);
+
         let (s, rhs) = Number::new(s);
 
         Expr { lhs, rhs, op }
@@ -88,6 +92,18 @@ mod tests {
                 lhs: Number(1),
                 rhs: Number(2),
                 op: Op::Add,
+            }
+        );
+    }
+
+    #[test]
+    fn parse_with_whitespace() {
+        assert_eq!(
+            Expr::new("1 / 2"),
+            Expr {
+                lhs: Number(1),
+                rhs: Number(2),
+                op: Op::Div,
             }
         );
     }
