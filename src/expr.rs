@@ -36,13 +36,13 @@ impl Op {
 
 #[derive(Debug, PartialEq)]
 pub struct Expr {
-    lhs: Number,
-    rhs: Number,
-    op: Op,
+    pub lhs: Number,
+    pub rhs: Number,
+    pub op: Op,
 }
 
 impl Expr {
-    pub fn new(s: &str) -> Self {
+    pub fn new(s: &str) -> (&str, Self) {
         let (s, lhs) = Number::new(s);
         let (s, _) = utils::extract_whitespaces(s);
 
@@ -51,7 +51,7 @@ impl Expr {
 
         let (s, rhs) = Number::new(s);
 
-        Expr { lhs, rhs, op }
+        (s, Expr { lhs, rhs, op })
     }
 }
 
@@ -88,11 +88,14 @@ mod tests {
     fn parse_one_plus_two() {
         assert_eq!(
             Expr::new("1+2"),
-            Expr {
-                lhs: Number(1),
-                rhs: Number(2),
-                op: Op::Add,
-            }
+            (
+                "",
+                Expr {
+                    lhs: Number(1),
+                    rhs: Number(2),
+                    op: Op::Add,
+                }
+            )
         );
     }
 
@@ -100,11 +103,14 @@ mod tests {
     fn parse_with_whitespace() {
         assert_eq!(
             Expr::new("1 / 2"),
-            Expr {
-                lhs: Number(1),
-                rhs: Number(2),
-                op: Op::Div,
-            }
+            (
+                "",
+                Expr {
+                    lhs: Number(1),
+                    rhs: Number(2),
+                    op: Op::Div,
+                }
+            )
         );
     }
 }

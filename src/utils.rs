@@ -27,6 +27,20 @@ pub(crate) fn extract_ops(s: &str) -> (&str, &str) {
     (&s[1..], &s[0..1])
 }
 
+pub(crate) fn extract_ident(s: &str) -> (&str, &str) {
+    let input_starts_with_alphanumeric = s
+        .chars()
+        .next()
+        .map(|c| c.is_ascii_alphabetic())
+        .unwrap_or(false);
+
+    if input_starts_with_alphanumeric {
+        take_while(|c| c.is_ascii_alphanumeric(), s)
+    } else {
+        (s, "")
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -69,5 +83,15 @@ mod tests {
     #[test]
     fn extract_spaces() {
         assert_eq!(extract_whitespaces(" 1"), ("1", " "));
+    }
+
+    #[test]
+    fn extract_alphanumeric_ident() {
+        assert_eq!(extract_ident("foobar1()"), ("()", "foobar1"));
+    }
+
+    #[test]
+    fn cannot_extract_indent_beginning_with_numbers() {
+        assert_eq!(extract_ident("12312asdadad"), ("12312asdadad", ""));
     }
 }
