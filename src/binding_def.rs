@@ -14,11 +14,7 @@ impl BindingDef {
         let (s, name) = utils::extract_ident(s);
         let (s, _) = utils::extract_whitespaces(s);
 
-        let s = if s.starts_with('=') {
-            &s[1..]
-        } else {
-            panic!("expected equal sign!")
-        };
+        let s = utils::tag("=", s);
 
         let (s, _) = utils::extract_whitespaces(s);
         let (s, val) = Expr::new(s);

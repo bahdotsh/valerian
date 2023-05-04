@@ -41,6 +41,14 @@ pub(crate) fn extract_ident(s: &str) -> (&str, &str) {
     }
 }
 
+pub(crate) fn tag<'a>(starting_text: &str, s: &'a str) -> &'a str {
+    if s.starts_with(starting_text) {
+        &s[starting_text.len()..]
+    } else {
+        panic!("expected: {}", starting_text);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -93,5 +101,10 @@ mod tests {
     #[test]
     fn cannot_extract_indent_beginning_with_numbers() {
         assert_eq!(extract_ident("12312asdadad"), ("12312asdadad", ""));
+    }
+
+    #[test]
+    fn tag_word() {
+        assert_eq!(tag("=", "=a"), "a");
     }
 }
